@@ -1,0 +1,53 @@
+﻿@page "/EditTestCase/{Id}"
+@using TestAutomation.Data
+@inject TestCaseService TestCaseService
+@inject NavigationManager NavigationManager
+
+
+<PageTitle>Edit Test Cases</PageTitle>
+<!-- Edit Modal HTML -->
+<div id="editEmployeeModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form>
+				<div class="modal-header">
+					<h4 class="modal-title">Edit Test Case @obj.Id</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="ModuleName" class="control-label">Module Name</label>
+						<textarea form="ModuleName" class="form-control" @bind="@obj.ModuleName" placeholder="Module Name" required />
+					</div>
+					<div class="form-group">
+						<label for="Name" class="control-label">Name</label>
+						<textarea form="Name" class="form-control" @bind="@obj.Name" placeholder="Name" required />
+					</div>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" value="Cancel" @onclick="@Cancel">
+					<input type="button" class="btn btn-success" value="Update" @onclick="@UpdateTestCase">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+@code {
+
+	[Parameter]
+	public string Id { get; set; }
+	TestCase obj = new TestCase();
+	protected override async Task OnInitializedAsync()
+	{
+		obj = await Task.Run(() => TestCaseService.GetTestCaseAsync(Convert.ToInt32(Id)));
+	}
+	protected async void UpdateTestCase()
+	{
+		await TestCaseService.UpdateTestCaseAsync(obj);
+		NavigationManager.NavigateTo("testcases");
+	}
+	void Cancel()
+	{
+		NavigationManager.NavigateTo("testcases");
+	}
+}

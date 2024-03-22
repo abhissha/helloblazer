@@ -1,0 +1,53 @@
+﻿@page "/DeleteTestCase/{Id}"
+@using TestAutomation.Data
+@inject TestCaseService TestCaseService
+@inject NavigationManager NavigationManager
+
+
+<PageTitle>Delete Test Cases</PageTitle>
+<!-- Edit Modal HTML -->
+<div id="deleteEmployeeModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form>
+				<div class="modal-header">
+					<h4 class="modal-title">Delete Test Case @obj.Id</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<b>Module Name:</b>
+						@obj.ModuleName
+					</div>
+					<div class="form-group">
+						<b>Name:</b>
+						<label>@obj.Name</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" value="Cancel" @onclick="@Cancel">
+					<input type="button" class="btn btn-success" value="Delete" @onclick="@Delete">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+@code {
+
+	[Parameter]
+	public string Id { get; set; }
+	TestCase obj = new TestCase();
+	protected override async Task OnInitializedAsync()
+	{
+		obj = await Task.Run(() => TestCaseService.GetTestCaseAsync(Convert.ToInt32(Id)));
+	}
+	protected async void Delete()
+	{
+		await TestCaseService.DeleteTestCaseAsync(obj);
+		NavigationManager.NavigateTo("testcases");
+	}
+	void Cancel()
+	{
+		NavigationManager.NavigateTo("testcases");
+	}
+}

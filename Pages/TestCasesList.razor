@@ -1,0 +1,69 @@
+﻿@page "/testcases"
+@using TestAutomation.Data
+@inject TestCaseService TestCaseService
+
+<PageTitle>Test Cases</PageTitle>
+@if (testCases == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="container-xl">
+        <div class="table-responsive">
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h2>Test <b>Cases</b></h2>
+                        </div>
+                        <div class="col-sm-6">
+                            @*<a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Employee</span></a>*@
+                            <NavLink class="btn btn-success" href="AddTestCase">
+                                <i class="material-icons">&#xE147;</i><span>Add New Test Case</span>
+                            </NavLink>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Module Name</th>
+                            <th>Name</th>
+                            <th>Manage</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var test in testCases)
+                        {
+                            <tr>
+                                <td>@test.Id</td>
+                                <td>@test.ModuleName</td>
+                                <td>@test.Name</td>
+                                <td><a href="inputsoutputs/@test.Id" class="edit" data-toggle="modal">Manage Inputs/Outputs</a></td>
+                                <td>                                    
+                                    <a href="EditTestCase/@test.Id" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                                    <a href="DeleteTestCase/@test.Id" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="clearfix">
+                    <div class="hint-text"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<TestCase> testCases;
+
+    protected override async Task OnInitializedAsync()
+    {
+        testCases = await TestCaseService.GetAllTestCasesAsync();
+    }
+}
